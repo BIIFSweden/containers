@@ -1,0 +1,9 @@
+name: napari
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+    - napari[all]==0.4.18
