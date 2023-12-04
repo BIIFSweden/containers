@@ -14,4 +14,4 @@ COPY environment.yml /tmp/environment.yml
 RUN conda env update -n base -q -f /tmp/environment.yml
 
 EXPOSE 8888
-CMD ["python", "-Xfrozen_modules=off", "-m", "jupyter", "lab", "--notebook-dir=/opt/notebooks", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+CMD ["python", "-Xfrozen_modules=off", "-m", "jupyter", "lab", "--notebook-dir=/data", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
