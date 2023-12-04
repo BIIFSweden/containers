@@ -1,4 +1,5 @@
 FROM continuumio/miniconda3:23.10.0-1
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN mkdir -p /data
 WORKDIR /data
