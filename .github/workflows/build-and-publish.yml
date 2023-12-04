@@ -21,6 +21,8 @@ jobs:
             context: ./jupyter
           - image: napari
             context: ./napari
+          - image: tissuumaps
+            context: ./tissuumaps
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
