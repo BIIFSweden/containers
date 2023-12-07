@@ -1,8 +1,16 @@
 FROM continuumio/miniconda3:23.10.0-1
 ARG DEBIAN_FRONTEND=noninteractive
+ARG USER=napari
+ARG UID=1000
+ENV NAPARI_PORT=9876
 
-RUN mkdir -p /data
-WORKDIR /data
+# user
+RUN useradd -m -u ${UID} ${USER}
+
+# workdir
+RUN mkdir -p /app /data && \
+    chown -R ${USER}:${USER} /data
+WORKDIR /app
 
 # napari dependencies
 RUN apt update && \
@@ -15,6 +23,7 @@ RUN apt update && \
     wget -O "/etc/apt/sources.list.d/xpra.sources" https://xpra.org/repos/bullseye/xpra.sources && \
     apt update && \
     apt install -y xpra
+ENV XDG_RUNTIME_DIR=/tmp/xdg
 
 # conda
 RUN conda update -c defaults -q -y conda && \
@@ -25,10 +34,9 @@ RUN conda update -c defaults -q -y conda && \
 COPY environment.yml /tmp/environment.yml
 RUN conda env update -n base -q -f /tmp/environment.yml
 
-# napari startup script
-COPY start-child.sh /opt/start-child.sh
-RUN chmod +x /opt/start-child.sh
+# start script
+COPY start-script.sh start-child.sh /app/
+RUN chmod +x /app/start-script.sh /app/start-child.sh
 
-EXPOSE 9876
-ENV XDG_RUNTIME_DIR=/tmp/xdg
-CMD ["xpra", "start", "--daemon=no", "--bind-tcp=0.0.0.0:9876", "--html=on", "--start-child=/opt/start-child.sh", "--exit-with-children=yes", "--exit-with-client=yes"]
+USER ${USER}
+ENTRYPOINT [ "./start-script.sh" ]

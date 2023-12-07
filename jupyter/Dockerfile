@@ -1,8 +1,16 @@
 FROM continuumio/miniconda3:23.10.0-1
 ARG DEBIAN_FRONTEND=noninteractive
+ARG USER=jupyter
+ARG UID=1000
+ENV JUPYTER_PORT=8888
 
-RUN mkdir -p /data
-WORKDIR /data
+# user
+RUN useradd -m -u ${UID} ${USER}
+
+# workdir
+RUN mkdir -p /app /data && \
+    chown -R ${USER}:${USER} /data
+WORKDIR /app
 
 # conda
 RUN conda update -c defaults -q -y conda && \
@@ -13,5 +21,9 @@ RUN conda update -c defaults -q -y conda && \
 COPY environment.yml /tmp/environment.yml
 RUN conda env update -n base -q -f /tmp/environment.yml
 
-EXPOSE 8888
-CMD ["python", "-Xfrozen_modules=off", "-m", "jupyter", "lab", "--notebook-dir=/data", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+# start script
+COPY start-script.sh /app/
+RUN chmod +x /app/start-script.sh
+
+USER ${USER}
+ENTRYPOINT [ "./start-script.sh" ]
