@@ -2,7 +2,6 @@ FROM cavenel/tissuumaps:3.2
 ARG DEBIAN_FRONTEND=noninteractive
 ARG USER=tissuumaps
 ARG UID=1000
-ENV TISSUUMAPS_PORT=80
 
 # user
 RUN adduser -u ${UID} -D ${USER}

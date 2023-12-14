@@ -17,10 +17,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: jupyter
-            context: ./jupyter
-          - image: napari
-            context: ./napari
+          - image: jupyter-napari-gpu
+            context: ./jupyter-napari-gpu
           - image: tissuumaps
             context: ./tissuumaps
     steps:
