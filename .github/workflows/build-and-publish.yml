@@ -23,8 +23,8 @@ jobs:
         include:
           - image: jupyter-napari-gpu
             context: ./jupyter-napari-gpu
-          - image: tissuumaps
-            context: ./tissuumaps
+          # - image: tissuumaps
+          #   context: ./tissuumaps
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
