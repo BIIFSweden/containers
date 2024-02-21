@@ -1,4 +1,4 @@
-name: base
+name: jupyter-napari-gpu
 channels:
   - pytorch
   - nvidia
@@ -9,9 +9,9 @@ dependencies:
   - jupyter-server-proxy
   - nodejs
   - pip
-  - python
+  - python<3.12
   - pytorch
   - pytorch-cuda=12.1
   - pip:
-    - napari[all]==0.4.18
+    - napari[all]==0.4.19
     - git+https://github.com/BIIFSweden/jupyter-xprahtml5-proxy.git

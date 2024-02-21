@@ -41,19 +41,15 @@ WORKDIR /home/${USER}
 # create data directory
 RUN mkdir /home/${USER}/data
 
-# install and configure miniconda
-RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    bash Miniconda3-latest-Linux-x86_64.sh -b && \
-    rm Miniconda3-latest-Linux-x86_64.sh
-ENV PATH="/home/${USER}/miniconda3/bin:${PATH}"
-RUN conda init && \
-    conda update -y conda && \
-    conda install -y conda-libmamba-solver && \
-    conda config --set solver libmamba
+# install and configure miniforge
+RUN wget -q https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh && \
+    bash Miniforge3-Linux-x86_64.sh -b -p "${HOME}/conda" && \
+    rm Miniforge3-Linux-x86_64.sh
+ENV PATH="/home/${USER}/conda/bin:${PATH}"
 
-# update base environment
+# create conda environment
 COPY environment.yml .
-RUN conda env update -n base -f environment.yml && \
+RUN conda env create -f environment.yml && \
     rm environment.yml
 
 WORKDIR /app
