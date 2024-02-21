@@ -1,14 +1,17 @@
 FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
 ARG DEBIAN_FRONTEND=noninteractive
 ARG USER=jupyter
+ARG GROUP=jupyter
 ARG UID=1000
+ARG GID=1000
 
 # set environment variables
 ENV XDG_RUNTIME_DIR=/run/user/${UID}
 ENV DISPLAY=:0
 
 # create unprivileged user
-RUN useradd -m -u ${UID} ${USER} && \
+RUN addgroup --gid ${GID} ${GROUP} && \
+    adduser --home /home/${USER} --uid ${UID} --gid ${GID} --disabled-password --gecos "" ${USER} && \
     mkdir -p ${XDG_RUNTIME_DIR} && \
     chmod -R 700 ${XDG_RUNTIME_DIR} && \
     chown -R ${USER}:${USER} ${XDG_RUNTIME_DIR}
@@ -31,13 +34,12 @@ RUN mkdir -p /app
 COPY start-script.sh /app/
 RUN chmod +x /app/start-script.sh
 
-# create data directory
-RUN mkdir -p /data && \
-    chown -R ${USER}:${USER} /data
-
 # switch to unprivileged user
 USER ${USER}
 WORKDIR /home/${USER}
+
+# create data directory
+RUN mkdir /home/${USER}/data
 
 # install and configure miniconda
 RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
